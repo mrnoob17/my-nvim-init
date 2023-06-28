@@ -1,8 +1,8 @@
-syntax match myoperators "[+/*%^&!|<>?-]"
-syntax match mymisc "[:.,\[\]=]"
+syntax match myoperators "[=+/*%^&!|<>?-]"
+syntax match mymisc "[:.,\[\]]"
 syntax match mybrackets "[(){}]"
 hi clear SignColumn
-syn keyword cTodo contained  BUG TEST OPTIMIZE PRIORITY NOTE
+syn keyword cTodo contained  BUG TEST OPTIMIZE PRIORITY NOTE DEPRE
 "hi cTodo guifg=#53f5b1 guibg=NONE gui=NONE
 "hi VertSplit guifg=#1d2021 guibg=#d5c4a1
 "hi StatusLine guifg=#1d2021 guibg=#ebdbb2
@@ -52,8 +52,6 @@ syn keyword cTodo contained  BUG TEST OPTIMIZE PRIORITY NOTE
 "hi link TSType Type
 "hi link TSTypeBuiltin Type
 "hi link TSOperator Normal
-"hi link TSNamespace Normal
-"hi link TSMethod Normal
 "hi link TSNumber Number
 "hi link TSKeyword Statement
 "hi link TSKeywordReturn TSKeyword
@@ -62,8 +60,6 @@ syn keyword cTodo contained  BUG TEST OPTIMIZE PRIORITY NOTE
 "hi link TSInclude PreProc
 "hi link TSFunction Normal
 "hi link TSFloat Number
-"hi link TSField Normal
-"hi link TSProperty Normal
 "hi link TSConstructor Type
 "hi link TSConditional TSKeyword
 "hi link TSCharacter String
@@ -73,14 +69,12 @@ syn keyword cTodo contained  BUG TEST OPTIMIZE PRIORITY NOTE
 "hi link TSConstMacro Macro
 "hi link TSFuncBuiltin TSFunction
 "hi link TSFuncMacro TSFunction
-"hi link TSParameter Normal 
 "hi link TSParameterReference Normal
 "hi link TSPunctDelimiter Normal
 "hi link TSString String
 "hi link TSStringEscape String
 "hi link TSStringRegex String
 "hi link TSStringSpecial String
-"hi link TSSymbol Normal
 "hi link TSVariable Normal
 "hi link TSRepeat Statement
 "hi link TSVariableBuiltin Normal

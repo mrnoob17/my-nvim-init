@@ -20,7 +20,13 @@ Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 "Plug 'hrsh7th/cmp-vsnip'
 "Plug 'hrsh7th/vim-vsnip'
 
-"Plug 'ray-x/lsp_signature.nvim'
+Plug 'ray-x/lsp_signature.nvim'
+
+Plug 'alligator/accent.vim'
+
+Plug 'aditya-azad/candle-grey'
+
+Plug 'kristijanhusak/vim-hybrid-material'
 
 Plug '~romainl/vim-bruin'
 
@@ -81,7 +87,7 @@ lua << EOF
         local bufopts = { noremap=true, silent=true, buffer=bufnr }
         vim.keymap.set('n', 'CD', vim.lsp.buf.declaration, bufopts)
         vim.keymap.set('n', 'CT', vim.lsp.buf.definition, bufopts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+        vim.keymap.set('n', '[', vim.lsp.buf.hover, bufopts)
         vim.keymap.set('n', 'RE', vim.lsp.buf.rename, bufopts)
         vim.keymap.set('n', 'CR', vim.lsp.buf.references, bufopts)
     end
@@ -90,7 +96,7 @@ lua << EOF
     --  highlight = {enable = true}
     --}
 
-    require'lspconfig'.ccls.setup{
+    require'lspconfig'.clangd.setup{
         on_attach = on_attach,
         --init_options = {
         --    highlight = {
@@ -99,10 +105,13 @@ lua << EOF
         --},
         --cmd = { "clangd", "--completion-style=detailed" },
         --cmd = { "clangd", "--function-arg-placeholders" },
+        --cmd = { "clangd", "-j=8" },
         --cmd = { "clangd", "--background-index" },
+        --cmd = { "clangd", "--malloc-trim" },
+        --cmd = { "clangd", "--pch-storage=memory" },
     }
 
-    local servers = {'ccls'}
+    local servers = {'clangd'}
     local root_dir =  {'compile_commands.json'}
 
     local cmp = require'cmp'
@@ -113,9 +122,13 @@ lua << EOF
           documentation = cmp.config.window.bordered(),
         },
 
+        completion = {
+          autocomplete = true,
+        },
+
         mapping = cmp.mapping.preset.insert({
-           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-           ['<C-f>'] = cmp.mapping.scroll_docs(4),
+           --['<C-b>'] = cmp.mapping.scroll_docs(-4),
+           --['<C-f>'] = cmp.mapping.scroll_docs(4),
            ['<C-k>'] = cmp.mapping.select_prev_item(),
            ['<C-j>'] = cmp.mapping.select_next_item(),
            ['<C-Space>'] = cmp.mapping.complete(),
@@ -145,7 +158,7 @@ lua << EOF
             spacing = 0,
             prefix = "@",
         },
-        update_in_insert = false,
+        update_in_insert = true,
     })
 
     vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false, source = "always", border = 'single'})]])
@@ -203,12 +216,6 @@ call rpcnotify(0, "Gui", "Option", "Popupmenu", 0)
 set signcolumn=no
 
 let c_no_curly_error = 1
-let g:seoul256_background = 233
-let g:gruvbox_contrast_dark = 'hard'
-let g:gruvbox_bold = 0
-let g:gruvbox_termcolors = 16
-let b:coc_suggest_disable = 1
-let g:solarized_italics = 0
 set backupdir=~/AppData/Local/nvim-data/backup
 set updatetime=300
 set completeopt-=preview
@@ -224,6 +231,7 @@ filetype indent plugin on
 set backspace=indent,eol,start
 set belloff=all
 set wrap
+set cursorline
 syntax enable
 set termguicolors
 set background=dark
@@ -232,18 +240,17 @@ set mouse=a
 set formatoptions-=cro
 set guioptions=
 
-set guifont=Courier\ New:h14
+let g:nvy = 0
 
-let s:fontsize = 12
-function! AdjustFontSize(amount)
-  let s:fontsize = s:fontsize+a:amount
-  :execute "GuiFont! Courier New:h" . s:fontsize
-endfunction
+let g:neovide_cursor_trail_size = 0.05
+let g:neovide_cursor_animation_length = 0.05
+let g:neovide_scroll_animation_length = 0.1
+let g:neovide_refresh_rate = 60
+let g:neovide_fullscreen = v:true 
+let g:neovide_remember_window_size = v:true
+let g:neovide_cursor_antialiasing = v:false
 
-noremap <F8> :call AdjustFontSize(1)<CR>
-noremap <F7> :call AdjustFontSize(-1)<CR>
-inoremap <F8> <Esc>:call AdjustFontSize(1)<CR>a
-inoremap <F7> <Esc>:call AdjustFontSize(-1)<CR>a
+set guifont=Office\ Code\ Pro\ D:h14
 
 set guicursor=i:block20-Cursor
 set guicursor=n-v-c:block20-Cursor
@@ -259,20 +266,57 @@ set noshowmatch
 set confirm
 set showtabline=0
 
+let g:accent_colour = 'orange'
+let g:accent_darken = 1
 let g:codedark_conservative = 0
 color hemisu
 
+NvuiAnimationsEnabled 1
+NvuiCursorAnimationDuration 0.1
+NvuiScrollAnimationDuration 0.05
+NvuiMoveAnimationDuration 0.05
+"NvuiCmdline 0
+"NvuiCmdPadding 8
+"NvuiCmdCenterXPos 0.5
+"NvuiCmdCenterYPos 0.5
+"NvuiCmdWidth 0.6
+"NvuiCmdFontFamily Office Code Pro D
+"NvuiCmdFontSize 18
+
+let s:fontsize = 12
+function! AdjustFontSize(amount)
+  let s:fontsize = s:fontsize+a:amount
+  :execute "set guifont=Office\\ Code\\ Pro\\ D:h" . s:fontsize
+endfunction
+
+noremap <F8> :call AdjustFontSize(1)<CR>
+noremap <F7> :call AdjustFontSize(-1)<CR>
+inoremap <F8> <Esc>:call AdjustFontSize(1)<CR>a
+inoremap <F7> <Esc>:call AdjustFontSize(-1)<CR>a
+
+noremap <A-g> :NvuiToggleFullscreen<CR>
+inoremap <A-g> <Esc>:NvuiToggleFullscreen<CR>a
+
 hi! Cursor ctermfg=1 ctermbg=1 guifg=#000000 guibg=#00FF00
 
-hi link myoperators Type 
-hi mybrackets guifg=#c9c9c9 gui=NONE
-hi mymisc guifg=#c9c9c9 gui=NONE
+hi! link Character String
 
-"hi link LspCxxHlSymVariable Identifier
-"hi Comment guifg=#e396fa
-"hi link myoperators Operator
+"hi! link LspCxxHlGroupNamespace Normal
+"hi! link LspCxxHlSymNamespace LspCxxHlGroupNamespace
+"hi! link LspCxxHlSymFunction Normal
+"hi! link LspCxxHlSymVariable Identifier
+"hi! link LspCxxHlSymParameter Identifier
+"hi! link LspCxxHlGroupMemberVariable Normal
+"hi! link LspCxxHlSymField Normal
+"hi! link LspCxxHlSymMethod Normal
+"hi! link LspCxxHlSymEnum Type
+"hi! link LspCxxHlGroupEnumConstant Constant
+"hi! link LspCxxHlSymEnumMember LspCxxHlGroupEnumConstant
+"hi! link LspCxxHlSymVariableExtern Constant
+"hi! link LspCxxHlSymVariableStatic Constant
 
-"search and replace in line range
-"nmap <F1> :#,#s///g
-"imap <F1> <ESC>:#,#s///g
+"hi! link myoperators Type 
+"hi mybrackets guifg=#c9c9c9 gui=NONE
+"hi mymisc guifg=#c9c9c9 gui=NONE
 
+"hi Comment guifg=#e3696fa
