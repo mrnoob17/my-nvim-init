@@ -19,9 +19,9 @@ let g:colors_name = "hemisu"
 "}}}
 " The Colors -----------------------------------------------{{{
 " Define reusable colors
-let s:black            = { "gui": "#000000", "cterm": "16"  }
+let s:black            = { "gui": "#080D14", "cterm": "16"  }
 let s:white            = { "gui": "#FFFFFF", "cterm": "231" }
-let s:almostWhite      = { "gui": "#F5D4A2", "cterm": "255" }
+let s:almostWhite      = { "gui": "#FFDABD", "cterm": "255" }
 let s:almostBlack      = { "gui": "#111111", "cterm": "233" }
 let s:middleDarkGrey   = { "gui": "#777777", "cterm": "241" }
 let s:middleLightGrey  = { "gui": "#999999", "cterm": "246" }
@@ -37,11 +37,17 @@ let s:darkBlue         = { "gui": "#005F87", "cterm": "24"  }
 let s:middleDarkBlue   = { "gui": "#538192", "cterm": "24"  }
 let s:middleLightBlue  = { "gui": "#9FD3E6", "cterm": "116" }
 let s:lightBlue        = { "gui": "#CBE4EE", "cterm": "195" }
+let s:verylightBlue    = { "gui": "#D7F9FC", "cterm": "195" }
+let s:lightCyan        = { "gui": "#84D9A5", "cterm": "195" }
+let s:lightPurple      = { "gui": "#8CFAF1", "cterm": "195" }
 
 let s:darkGreen        = { "gui": "#5F5F00", "cterm": "58"  }
 let s:middleDarkGreen  = { "gui": "#739200", "cterm": "64"  }
-let s:middleLightGreen = { "gui": "#B1D631", "cterm": "149" }
-let s:lightGreen       = { "gui": "#BBFFAA", "cterm": "157" }
+let s:middleLightGreen = { "gui": "#C78C52", "cterm": "149" }
+let s:lightGreen       = { "gui": "#EAEB88", "cterm": "157" }
+let s:intenseGreen     = { "gui": "#52EB66", "cterm": "157" }
+
+let s:darkGold         = { "gui": "#C2B85B", "cterm": "149" }
 
 let s:darkTan          = { "gui": "#503D15", "cterm": "52"  }
 let s:lightTan         = { "gui": "#ECE1C8", "cterm": "230" }
@@ -56,9 +62,11 @@ if &background == "dark"
   let s:subtle     = s:darkGrey
   let s:faint      = s:almostBlack
   let s:accent1    = s:middleLightBlue
-  let s:accent2    = s:middleLightGreen
-  let s:accent3    = s:lightGreen
+  let s:accent2    = s:darkGold
+  let s:accent3    = s:lightCyan
   let s:accent4    = s:lightTan
+  let s:accent5    = s:verylightBlue
+  let s:accent6    = s:middleLightGreen
   let s:normRed    = s:middleLightPink
   let s:normGreen  = s:middleLightGreen
   let s:normBlue   = s:middleLightBlue
@@ -159,20 +167,26 @@ hi! link SpecialKey   NonText
 "}}}
 " Highlights - Generic Syntax ------------------------------{{{
 call s:h("Delimiter",  { "fg": s:dimmed })
-call s:h("Comment",    { "fg": s:comment, "gui": "italic" })
+call s:h("Comment",    { "fg": s:dimmed, "gui": "italic" })
 call s:h("Underlined", { "fg": s:accent1, "gui": "underline", "cterm": "underline" })
 call s:h("Type",       { "fg": s:accent3 })
-call s:h("Statement",  { "fg": s:white})
 call s:h("String",     { "fg": s:accent2 })
-call s:h("Keyword",    { "fg": s:accent2, "gui": "bold", "cterm": "bold" })
+call s:h("Constant",   { "fg": s:accent6 })
+call s:h("Statement",  { "fg": s:accent5 })
+"call s:h("Number",     { "fg": s:lightPurple})
+call s:h("Identifier", { "fg": s:norm})
+call s:h("@lsp.mod.declaration", { "fg": s:lightGreen})
+call s:h("@lsp.mod.class", { "fg": s:accent3})
+call s:h("@lsp.typemod.variable.globalScope", { "fg": s:accent6})
+call s:h("@lsp.type.namespace", { "fg": s:norm})
+call s:h("Keyword",    { "fg": s:accent5 })
 call s:h("Todo",       { "fg": s:normRed, "gui": "bold", "cterm": "bold" })
-call s:h("Function",   { "gui": "bold", "cterm": "bold" })
-hi! link Identifier  Function
-hi! link Constant    Directory
-hi! link Number      Constant
-hi! link Special     Constant
-hi! link PreProc     Constant
-hi! link Error       ErrorMsg
+
+hi! link StorageClass Keyword
+hi! link Number       Normal
+hi! link Special      Constant
+hi! link PreProc      Constant
+hi! link Error        ErrorMsg
 
 "}}}
 " Highlights - HTML ----------------------------------------{{{
@@ -211,5 +225,5 @@ hi! link helpHyperTextJump   Underlined
 hi! link helpURL             Underlined
 
 "}}}
-"
+
 " vim: fdm=marker:sw=2:sts=2:et
