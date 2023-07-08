@@ -177,8 +177,14 @@ local create_diagnostic_floating_window = function()
     local buffnr,win_id = vim.diagnostic.open_float(nil)
     if(win_id ~= nil) then
         local pos = vim.api.nvim_win_get_cursor(0)
-        local width = vim.api.nvim_win_get_width(win_id) - pos[2]
-        vim.api.nvim_win_set_config(win_id, {relative = "cursor", row = 1, col = pos[2] - width}) 
+        local off = vim.api.nvim_win_get_width(win_id) + pos[2]
+        local win_width = vim.api.nvim_win_get_width(0)
+        if(off > win_width) then
+            off = win_width - off
+        else
+            off = 0
+        end
+        vim.api.nvim_win_set_config(win_id, {relative = "cursor", row = 1, col = off}) 
     end
 end
 
