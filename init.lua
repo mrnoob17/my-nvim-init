@@ -2,8 +2,6 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
-Plug 'itchyny/vim-gitbranch'
-
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'noahfrederick/vim-hemisu'
@@ -79,19 +77,10 @@ vim.api.nvim_exec([[
       :execute "set guifont=Office\\ Code\\ Pro\\ D:h" . s:fontsize
     endfunction
 
-    fu! UpdateSLine()
-        let branch = gitbranch#name()
-        if match(branch, '\S') >= 0
-            execute 'set statusline='
-            execute 'set statusline+=' . branch . '\|\ '
-            execute 'set statusline+=%f'
-            execute 'set statusline+=%m'
-            execute 'set statusline+=\ [line\ %l\/%L]' 
-        else
-            execute 'set statusline=%f'
-            execute 'set statusline+=%m'
-            execute 'set statusline+=\ [line\ %l\/%L]' 
-        endif
+    fu! UpdateStatusLine()
+        execute 'set statusline=%f'
+        execute 'set statusline+=%m'
+        execute 'set statusline+=\ [line\ %l\/%L]' 
     endfunction
 
 ]], true)
@@ -118,7 +107,7 @@ vim.api.nvim_create_autocmd({"VimEnter"}, {
 })
 
 vim.api.nvim_create_autocmd({"BufEnter"}, {
-    command = "call UpdateSLine()"
+    command = "call UpdateStatusLine()"
 })
 
 local opts = { noremap=true, silent=true }
