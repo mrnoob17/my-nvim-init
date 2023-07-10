@@ -10,7 +10,7 @@ Plug 'noahfrederick/vim-hemisu'
 
 vim.call('plug#end')
 
-vim.opt.guifont = "Office Code Pro D:h14"
+--vim.opt.guifont = "Ysabeau Infant:h14"
 
 vim.opt.updatetime = 50
 vim.opt.termguicolors = true
@@ -18,6 +18,7 @@ vim.opt.laststatus = 2
 vim.opt.wrap = true
 vim.opt.cursorline = true
 vim.opt.swapfile = false
+vim.opt.guicursor = ""
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -26,13 +27,14 @@ vim.opt.expandtab = true
 
 vim.cmd('let c_no_curly_error=1')
 
-vim.cmd('NvuiAnimationsEnabled 1')
-vim.cmd('NvuiCursorAnimationDuration 0.1')
-vim.cmd('NvuiScrollAnimationDuration 0.05')
-vim.cmd('NvuiMoveAnimationDuration 0.05')
+--vim.cmd('NvuiAnimationsEnabled 1')
+--vim.cmd('NvuiCursorAnimationDuration 0.1')
+--vim.cmd('NvuiScrollAnimationDuration 0.05')
+--vim.cmd('NvuiMoveAnimationDuration 0.05')
 
-vim.cmd('set guicursor=i:block20-Cursor')
-vim.cmd('set guicursor=n-v-c:block20-Cursor')
+--vim.cmd('set guicursor=i:block20-Cursor')
+--vim.cmd('set guicursor=n-v-c:block20-Cursor')
+
 vim.cmd('set t_md=')
 vim.cmd('set smartindent')
 vim.cmd('set nonu')
@@ -77,23 +79,6 @@ vim.api.nvim_exec([[
       :execute "set guifont=Office\\ Code\\ Pro\\ D:h" . s:fontsize
     endfunction
 
-    fu! SaveSess()
-      execute 'mksession! ' . getcwd() . '/.session.vim'
-    endfunction
-    
-    fu! RestoreSess()
-      if filereadable(getcwd() . '/.session.vim')
-        execute 'so ' . getcwd() . '/.session.vim'
-        if bufexists(1)
-          for l in range(1, bufnr('$'))
-            if bufwinnr(l) == -1
-              exec 'sbuffer ' . l
-            endif
-          endfor
-        endif
-      endif
-    endfunction
-    
     fu! UpdateSLine()
         let branch = gitbranch#name()
         if match(branch, '\S') >= 0
@@ -111,12 +96,25 @@ vim.api.nvim_exec([[
 
 ]], true)
 
+local project_create_session = function()
+    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) then
+        vim.cmd("mks! sess.vim")
+    end 
+end
+
+local project_load_session = function()
+    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) then
+        vim.cmd("so sess.vim")
+    end 
+end
+
 vim.api.nvim_create_autocmd({"VimLeave"}, {
-    command = "call SaveSess()"
+    callback = function() project_create_session() end,
 })
 
 vim.api.nvim_create_autocmd({"VimEnter"}, {
-    command = "nested call RestoreSess()"
+	nested = true,
+    callback = function() project_load_session() end,
 })
 
 vim.api.nvim_create_autocmd({"BufEnter"}, {
@@ -162,13 +160,17 @@ local my_format = function(diagnostic)
     end
 end
 
+local floating_format = function(diagnostic)
+    return string.format("%s (%s)", diagnostic.message, diagnostic.source) 
+end
+
 vim.diagnostic.config({
     virtual_text = {
         format = my_format,
         spacing = 0,
         prefix = "@",
     },
-    float = {focus=false, source = "always", border = 'single'},
+    float = {header = "", focus = false, source = false, border = 'rounded', suffix = ""},
     severity_sort = true,
     update_in_insert = true,
 })
@@ -184,7 +186,7 @@ local create_diagnostic_floating_window = function()
         else
             off = 0
         end
-        vim.api.nvim_win_set_config(win_id, {relative = "cursor", row = 1, col = off}) 
+        vim.api.nvim_win_set_config(win_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
     end
 end
 
