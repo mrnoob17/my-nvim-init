@@ -172,22 +172,23 @@ vim.diagnostic.config({
     },
     float = {header = "", focus = false, source = false, border = 'rounded', suffix = ""},
     severity_sort = true,
-    update_in_insert = true,
+    update_in_insert = false,
 })
 
 local create_diagnostic_floating_window = function()
-    local buffnr,win_id = vim.diagnostic.open_float(nil)
-    if(win_id ~= nil) then
-        local pos = vim.api.nvim_win_get_cursor(0)
-        local off = vim.api.nvim_win_get_width(win_id) + pos[2]
-        local win_width = vim.api.nvim_win_get_width(0)
-        if(off > win_width) then
-            off = win_width - off
-        else
-            off = 0
-        end
-        vim.api.nvim_win_set_config(win_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
-    end
+    local buffnr, win_id = vim.diagnostic.open_float(nil)
+    -- NOTE some gui front ends fail to keep the floating window inside the main window, so have to do some stuff!
+    --if(win_id ~= nil) then
+    --    local pos = vim.api.nvim_win_get_cursor(0)
+    --    local off = vim.api.nvim_win_get_width(win_id) + pos[2]
+    --    local win_width = vim.api.nvim_win_get_width(0)
+    --    if(off > win_width) then
+    --        off = win_width - off
+    --    else
+    --        off = 0
+    --    end
+    --    vim.api.nvim_win_set_config(win_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
+    --end
 end
 
 vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
