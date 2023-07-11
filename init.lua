@@ -14,7 +14,6 @@ vim.opt.updatetime = 50
 vim.opt.termguicolors = true
 vim.opt.laststatus = 2
 vim.opt.wrap = true
-vim.opt.cursorline = true
 vim.opt.swapfile = false
 vim.opt.guicursor = ""
 
@@ -106,8 +105,17 @@ vim.api.nvim_create_autocmd({"VimEnter"}, {
     callback = function() project_load_session() end,
 })
 
+local buf_enter_commands = function()
+    vim.cmd("set cursorline")
+    vim.cmd("call UpdateStatusLine()")
+end
+
 vim.api.nvim_create_autocmd({"BufEnter"}, {
-    command = "call UpdateStatusLine()"
+    callback = function() buf_enter_commands() end,
+})
+
+vim.api.nvim_create_autocmd({"BufLeave"}, {
+    command = "set nocursorline"
 })
 
 local opts = { noremap=true, silent=true }
@@ -164,23 +172,36 @@ vim.diagnostic.config({
     update_in_insert = false,
 })
 
-local create_diagnostic_floating_window = function()
-    local buffnr, win_id = vim.diagnostic.open_float(nil)
+local diagnostic_window_id
+
+local create_diagnostic_window = function()
+    local buffnr, id = vim.diagnostic.open_float(nil)
+    diagnostic_window_id = id
     -- NOTE some gui front ends fail to keep the floating window inside the main window, so have to do some stuff!
-    --if(win_id ~= nil) then
+    --if(diagnostic_window_id ~= nil) then
     --    local pos = vim.api.nvim_win_get_cursor(0)
-    --    local off = vim.api.nvim_win_get_width(win_id) + pos[2]
+    --    local off = vim.api.nvim_win_get_width(diagnostic_window_id) + pos[2]
     --    local win_width = vim.api.nvim_win_get_width(0)
     --    if(off > win_width) then
     --        off = win_width - off
     --    else
     --        off = 0
     --    end
-    --    vim.api.nvim_win_set_config(win_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
+    --    vim.api.nvim_win_set_config(diagnostic_window_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
     --end
 end
 
-vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
-    callback = function() create_diagnostic_floating_window() end,
+local close_diagnostic_window = function()
+    if diagnostic_window_id ~= nil then
+        vim.api.nvim_win_close(diagnostic_window_id, false)
+    end
+end
+
+vim.api.nvim_create_autocmd({"InsertEnter"}, {
+    callback = function() close_diagnostic_window() end,
+})
+
+vim.api.nvim_create_autocmd({"CursorHold"}, {
+    callback = function() create_diagnostic_window() end,
 })
 
