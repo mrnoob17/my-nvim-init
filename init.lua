@@ -2,13 +2,21 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
+--plugins for auto complete
+
+--Plug 'hrsh7th/nvim-cmp'
+
+--Plug 'hrsh7th/cmp-nvim-lsp'
+
+--Plug 'L3MON4D3/LuaSnip'
+
+--Plug 'saadparwaiz1/cmp_luasnip'
+
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'noahfrederick/vim-hemisu'
 
 vim.call('plug#end')
-
---vim.opt.guifont = "Ysabeau Infant:h14"
 
 vim.opt.updatetime = 50
 vim.opt.termguicolors = true
@@ -24,14 +32,6 @@ vim.opt.expandtab = true
 
 vim.cmd('let c_no_curly_error=1')
 
---vim.cmd('NvuiAnimationsEnabled 1')
---vim.cmd('NvuiCursorAnimationDuration 0.1')
---vim.cmd('NvuiScrollAnimationDuration 0.05')
---vim.cmd('NvuiMoveAnimationDuration 0.05')
-
---vim.cmd('set guicursor=i:block20-Cursor')
---vim.cmd('set guicursor=n-v-c:block20-Cursor')
-
 vim.cmd('set t_md=')
 vim.cmd('set smartindent')
 vim.cmd('set nonu')
@@ -40,20 +40,22 @@ vim.cmd('set confirm')
 vim.cmd('set showtabline=0')
 
 vim.cmd('filetype indent plugin on')
-vim.cmd('set backupdir=~/AppData/Local/nvim-data/backup')
 vim.cmd('set mouse=a')
 vim.cmd('set signcolumn=no')
 vim.cmd('set clipboard=unnamed')
 vim.cmd('set belloff=all')
+
 vim.cmd('set completeopt-=preview')
 vim.cmd('set completeopt=menu,menuone,noselect')
-vim.cmd('set fillchars+=vert:\\|')
-vim.cmd('set fillchars+=stl:-')
-vim.cmd('set fillchars+=stlnc:-')
+
+vim.cmd('set fillchars+=vert:\\.')
+vim.cmd('set fillchars+=stl:.')
+vim.cmd('set fillchars+=stlnc:.')
+
 vim.cmd('set ssop-=options')
 vim.cmd('set ssop+=winpos')
-vim.cmd('set ssop+=winpos')
 vim.cmd('set ssop+=resize')
+
 vim.cmd('set backspace=indent,eol,start')
 vim.cmd('set formatoptions-=cro')
 vim.cmd('set guioptions=')
@@ -85,13 +87,13 @@ vim.api.nvim_exec([[
 ]], true)
 
 local project_create_session = function()
-    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) then
+    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) == 1 then
         vim.cmd("mks! sess.vim")
     end 
 end
 
 local project_load_session = function()
-    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) then
+    if vim.fn.filereadable(string.format("%s\\%s", vim.fn.getcwd(), "_project_")) == 1 then
         vim.cmd("so sess.vim")
     end 
 end
@@ -126,24 +128,17 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
     vim.keymap.set('n', 'CD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'CT', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', '[', vim.lsp.buf.hover, bufopts)
     vim.keymap.set('n', 'RE', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', 'CR', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', 'F', vim.lsp.buf.code_action, bufopts)
 end
 
 require'lspconfig'.clangd.setup{
     on_attach = on_attach,
-    --cmd = { "clangd", "--completion-style=detailed" },
-    --cmd = { "clangd", "--function-arg-placeholders" },
-    --cmd = { "clangd", "-j=8" },
-    --cmd = { "clangd", "--background-index" },
-    --cmd = { "clangd", "--malloc-trim" },
-    --cmd = { "clangd", "--pch-storage=memory" },
 }
 
 local servers = {'clangd'}
@@ -172,12 +167,55 @@ vim.diagnostic.config({
     update_in_insert = false,
 })
 
+--local cmp = require'cmp'
+--
+--cmp.setup({
+--    snippet = {
+--      expand = function(args)
+--        require('luasnip').lsp_expand(args.body)
+--      end,
+--    },
+--
+--    window = {
+--      completion = cmp.config.window.bordered(),
+--      documentation = cmp.config.window.bordered(),
+--    },
+--
+      -- remove if you want completion without key to toggle it
+--    completion = {
+--        autocomplete = false,
+--    },
+--
+--    mapping = cmp.mapping.preset.insert({
+--      ['<C-k>'] = cmp.mapping(cmp.mapping.select_prev_item()),
+--      ['<C-j>'] = cmp.mapping(cmp.mapping.select_next_item()),
+
+        -- enable completion, keybind only useful when autocomplete = false is removed
+--      ['<C-c>'] = cmp.mapping.complete(),
+
+--      ['<ESC>'] = cmp.mapping.abort(),
+--      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+--    }),
+--
+--    sources = cmp.config.sources({
+--      { name = 'nvim_lsp',
+--                entry_filter = function(entry, ctx)
+--                    return require("cmp").lsp.CompletionItemKind.Text ~= entry:get_kind() end},
+--    }),
+--
+--})
+--local capabilities = require('cmp_nvim_lsp').default_capabilities()
+--require('lspconfig')['<clangd>'].setup {
+--  capabilities = capabilities
+--}
+
+
 local diagnostic_window_id
 
 local create_diagnostic_window = function()
     local buffnr, id = vim.diagnostic.open_float(nil)
     diagnostic_window_id = id
-    -- NOTE some gui front ends fail to keep the floating window inside the main window, so have to do some stuff!
+    -- NOTE some gui front ends fail to keep the floating window inside the main window, so have to do some manual shit!
     --if(diagnostic_window_id ~= nil) then
     --    local pos = vim.api.nvim_win_get_cursor(0)
     --    local off = vim.api.nvim_win_get_width(diagnostic_window_id) + pos[2]
@@ -190,16 +228,6 @@ local create_diagnostic_window = function()
     --    vim.api.nvim_win_set_config(diagnostic_window_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
     --end
 end
-
-local close_diagnostic_window = function()
-    if diagnostic_window_id ~= nil then
-        vim.api.nvim_win_close(diagnostic_window_id, false)
-    end
-end
-
-vim.api.nvim_create_autocmd({"InsertEnter"}, {
-    callback = function() close_diagnostic_window() end,
-})
 
 vim.api.nvim_create_autocmd({"CursorHold"}, {
     callback = function() create_diagnostic_window() end,
