@@ -2,16 +2,6 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
---plugins for auto complete
-
---Plug 'hrsh7th/nvim-cmp'
---
---Plug 'hrsh7th/cmp-nvim-lsp'
---
---Plug 'L3MON4D3/LuaSnip'
---
---Plug 'saadparwaiz1/cmp_luasnip'
-
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'noahfrederick/vim-hemisu'
@@ -167,67 +157,8 @@ vim.diagnostic.config({
     update_in_insert = false,
 })
 
---local cmp = require'cmp'
---cmp.setup({
---    snippet = {
---      expand = function(args)
---        require('luasnip').lsp_expand(args.body)
---      end,
---    },
---
---    window = {
---      completion = cmp.config.window.bordered(),
---      documentation = cmp.config.window.bordered(),
---    },
---
---    -- remove if you want completion without key to toggle it
---    completion = {
---        autocomplete = false,
---    },
---
---    mapping = cmp.mapping.preset.insert({
---      ['<C-k>'] = cmp.mapping(cmp.mapping.select_prev_item()),
---      ['<C-j>'] = cmp.mapping(cmp.mapping.select_next_item()),
---
---      -- enable completion, keybind only useful when autocomplete = false is removed
---      ['<C-c>'] = cmp.mapping.complete(),
---
---      ['<ESC>'] = cmp.mapping.abort(),
---      ['<CR>'] = cmp.mapping.confirm({ select = true }),
---    }),
---
---    sources = cmp.config.sources({
---      { name = 'nvim_lsp',
---                entry_filter = function(entry, ctx)
---                    return require("cmp").lsp.CompletionItemKind.Text ~= entry:get_kind() end},
---    }),
---
---})
---local capabilities = require('cmp_nvim_lsp').default_capabilities()
---require('lspconfig')['<clangd>'].setup {
---  capabilities = capabilities
---}
-
-
-local diagnostic_window_id
-
 local create_diagnostic_window = function()
-    local buffnr, id = vim.diagnostic.open_float(nil)
-    diagnostic_window_id = id
-
-    -- NOTE for gui frontends, some gui front ends fail to keep the floating window inside the main window, so have to do some manual shit!
-    --if(diagnostic_window_id ~= nil) then
-    --    local pos = vim.api.nvim_win_get_cursor(0)
-    --    local off = vim.api.nvim_win_get_width(diagnostic_window_id) + pos[2]
-    --    local win_width = vim.api.nvim_win_get_width(0)
-    --    if(off > win_width) then
-    --        off = win_width - off
-    --    else
-    --        off = 0
-    --    end
-    --    vim.api.nvim_win_set_config(diagnostic_window_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
-    --end
-    
+    vim.diagnostic.open_float(nil)
 end
 
 vim.api.nvim_create_autocmd({"CursorHold"}, {
