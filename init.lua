@@ -118,7 +118,7 @@ require'lspconfig'.clangd.setup{
 }
 
 local servers = {'clangd'}
-local root_dir =  {'compile_commands.json', 'compile_flags.txt', '.clangd'}
+local root_dir =  {'compile_commands.json'}
 
 local my_format = function(diagnostic)
     if(diagnostic.severity == vim.diagnostic.severity.WARN) then
