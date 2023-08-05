@@ -5,11 +5,11 @@ vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 --plugins for auto complete
 
 --Plug 'hrsh7th/nvim-cmp'
-
+--
 --Plug 'hrsh7th/cmp-nvim-lsp'
-
+--
 --Plug 'L3MON4D3/LuaSnip'
-
+--
 --Plug 'saadparwaiz1/cmp_luasnip'
 
 Plug 'neovim/nvim-lspconfig'
@@ -168,7 +168,6 @@ vim.diagnostic.config({
 })
 
 --local cmp = require'cmp'
---
 --cmp.setup({
 --    snippet = {
 --      expand = function(args)
@@ -181,7 +180,7 @@ vim.diagnostic.config({
 --      documentation = cmp.config.window.bordered(),
 --    },
 --
-      -- remove if you want completion without key to toggle it
+--    -- remove if you want completion without key to toggle it
 --    completion = {
 --        autocomplete = false,
 --    },
@@ -189,10 +188,10 @@ vim.diagnostic.config({
 --    mapping = cmp.mapping.preset.insert({
 --      ['<C-k>'] = cmp.mapping(cmp.mapping.select_prev_item()),
 --      ['<C-j>'] = cmp.mapping(cmp.mapping.select_next_item()),
-
-        -- enable completion, keybind only useful when autocomplete = false is removed
+--
+--      -- enable completion, keybind only useful when autocomplete = false is removed
 --      ['<C-c>'] = cmp.mapping.complete(),
-
+--
 --      ['<ESC>'] = cmp.mapping.abort(),
 --      ['<CR>'] = cmp.mapping.confirm({ select = true }),
 --    }),
@@ -215,7 +214,8 @@ local diagnostic_window_id
 local create_diagnostic_window = function()
     local buffnr, id = vim.diagnostic.open_float(nil)
     diagnostic_window_id = id
-    -- NOTE some gui front ends fail to keep the floating window inside the main window, so have to do some manual shit!
+
+    -- NOTE for gui frontends, some gui front ends fail to keep the floating window inside the main window, so have to do some manual shit!
     --if(diagnostic_window_id ~= nil) then
     --    local pos = vim.api.nvim_win_get_cursor(0)
     --    local off = vim.api.nvim_win_get_width(diagnostic_window_id) + pos[2]
@@ -227,6 +227,7 @@ local create_diagnostic_window = function()
     --    end
     --    vim.api.nvim_win_set_config(diagnostic_window_id, {style = "minimal", relative = "cursor", row = 1, col = off}) 
     --end
+    
 end
 
 vim.api.nvim_create_autocmd({"CursorHold"}, {
