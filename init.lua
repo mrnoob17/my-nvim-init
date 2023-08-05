@@ -52,21 +52,7 @@ vim.cmd('set guioptions=')
 vim.cmd('set background=dark')
 vim.cmd('color hemisu')
 
-vim.keymap.set({'n'}, '<F8>', ':call AdjustFontSize(1)<CR>')
-vim.keymap.set({'n'}, '<F7>', ':call AdjustFontSize(-1)<CR>')
-vim.keymap.set({'i'}, '<F8>', '<Esc>:call AdjustFontSize(1)<CR>a')
-vim.keymap.set({'i'}, '<F7>', '<Esc>:call AdjustFontSize(-1)<CR>a')
-
-vim.keymap.set({'n'}, '<A-g>', ':NvuiToggleFullscreen<CR>')
-vim.keymap.set({'i'}, '<A-g>', '<Esc>:NvuiToggleFullscreen<CR>a')
-
 vim.api.nvim_exec([[
-
-    let s:fontsize = 14
-    function! AdjustFontSize(amount)
-      let s:fontsize = s:fontsize+a:amount
-      :execute "set guifont=Office\\ Code\\ Pro\\ D:h" . s:fontsize
-    endfunction
 
     fu! UpdateStatusLine()
         execute 'set statusline=%f'
