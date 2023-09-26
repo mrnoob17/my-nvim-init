@@ -2,8 +2,6 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
-Plug 'neovim/nvim-lspconfig'
-
 Plug 'noahfrederick/vim-hemisu'
 
 vim.call('plug#end')
@@ -14,6 +12,8 @@ vim.opt.laststatus = 2
 vim.opt.wrap = true
 vim.opt.swapfile = false
 vim.opt.guicursor = ""
+
+vim.opt.guifont='Office Code Pro D:h14'
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -34,6 +34,7 @@ vim.cmd('set mouse=a')
 vim.cmd('set signcolumn=no')
 vim.cmd('set clipboard=unnamed')
 vim.cmd('set belloff=all')
+vim.cmd('set virtualedit=block')
 
 vim.cmd('set completeopt-=preview')
 vim.cmd('set completeopt=menu,menuone,noselect')
@@ -51,6 +52,10 @@ vim.cmd('set formatoptions-=cro')
 vim.cmd('set guioptions=')
 vim.cmd('set background=dark')
 vim.cmd('color hemisu')
+
+vim.cmd('set backupdir=~/appdata/local/nvim-data/backup')
+vim.cmd('set directory=~/appdata/local/nvim-data/backup')
+vim.cmd('set undodir=~/appdata/local/nvim-data/backup')
 
 vim.api.nvim_exec([[
 
@@ -95,59 +100,3 @@ vim.api.nvim_create_autocmd({"BufEnter"}, {
 vim.api.nvim_create_autocmd({"BufLeave"}, {
     command = "set nocursorline"
 })
-
-local opts = { noremap=true, silent=true }
-vim.keymap.set('n', 'FD', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', 'BD', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
-
-local on_attach = function(client, bufnr)
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set('n', 'CD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'CT', vim.lsp.buf.definition, bufopts)
-    vim.keymap.set('n', '[', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', 'RE', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', 'CR', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', 'F', vim.lsp.buf.code_action, bufopts)
-end
-
-require'lspconfig'.clangd.setup{
-    on_attach = on_attach,
-}
-
-local servers = {'clangd'}
-local root_dir =  {'compile_commands.json'}
-
-local my_format = function(diagnostic)
-    if(diagnostic.severity == vim.diagnostic.severity.WARN) then
-        return string.format("%s: %s", diagnostic.source, "warning") 
-    elseif(diagnostic.severity == vim.diagnostic.severity.ERROR) then
-        return string.format("%s: %s", diagnostic.source, "error") 
-    end
-end
-
-local floating_format = function(diagnostic)
-    return string.format("%s (%s)", diagnostic.message, diagnostic.source) 
-end
-
-vim.diagnostic.config({
-    virtual_text = {
-        format = my_format,
-        spacing = 0,
-        prefix = "@",
-    },
-    float = {header = "", focus = false, source = false, border = 'rounded', suffix = ""},
-    severity_sort = true,
-    update_in_insert = false,
-})
-
-local create_diagnostic_window = function()
-    vim.diagnostic.open_float(nil)
-end
-
-vim.api.nvim_create_autocmd({"CursorHold"}, {
-    callback = function() create_diagnostic_window() end,
-})
-
