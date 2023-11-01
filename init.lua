@@ -2,6 +2,7 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
+Plug 'neovim/nvim-lspconfig'
 Plug 'noahfrederick/vim-hemisu'
 
 vim.call('plug#end')
@@ -13,7 +14,7 @@ vim.opt.wrap = true
 vim.opt.swapfile = false
 vim.opt.guicursor = ""
 
-vim.opt.guifont='Office Code Pro D:h14'
+vim.opt.guifont='Office Code Pro D:h12'
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -21,7 +22,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 vim.cmd('let c_no_curly_error=1')
-
+vim.cmd('let g:zig_fmt_autosave = 0')
 vim.cmd('set t_md=')
 vim.cmd('set smartindent')
 vim.cmd('set nonu')
@@ -88,6 +89,16 @@ vim.api.nvim_create_autocmd({"VimEnter"}, {
     callback = function() project_load_session() end,
 })
 
+local check_morphus_file_type = function()
+    if vim.bo.filetype == ".mphs" then
+        vim.cmd("set filetype=mphs")      
+    end
+end
+
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+    callback = function() check_morphus_file_type() end,
+})
+
 local buf_enter_commands = function()
     vim.cmd("set cursorline")
     vim.cmd("call UpdateStatusLine()")
@@ -99,4 +110,62 @@ vim.api.nvim_create_autocmd({"BufEnter"}, {
 
 vim.api.nvim_create_autocmd({"BufLeave"}, {
     command = "set nocursorline"
+})
+
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', 'FD', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', 'BD', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+local on_attach = function(client, bufnr)
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    vim.keymap.set('n', 'CD', vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set('n', 'CT', vim.lsp.buf.definition, bufopts)
+    vim.keymap.set('n', '[', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', 'RE', vim.lsp.buf.rename, bufopts)
+    vim.keymap.set('n', 'CR', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', 'F', vim.lsp.buf.code_action, bufopts)
+end
+
+require'lspconfig'.clangd.setup{
+    on_attach = on_attach,
+    cmd = { "clangd", "--clang-tidy=false", "--background-index", "-j=8"},
+}
+
+local servers = {'clangd'}
+local root_dir =  {'compile_commands.json'}
+
+local my_format = function(diagnostic)
+    if diagnostic.severity == vim.diagnostic.severity.WARN then
+        return string.format("%s: %s", diagnostic.source, "warning") 
+    elseif diagnostic.severity == vim.diagnostic.severity.ERROR then
+        return string.format("%s: %s", diagnostic.source, "error") 
+    end
+end
+
+local floating_format = function(diagnostic)
+    return string.format("%s (%s)", diagnostic.message, diagnostic.source) 
+end
+
+vim.diagnostic.config({
+    virtual_text = {
+        format = my_format,
+        spacing = 0,
+        prefix = "@",
+    },
+    float = {header = "", focus = false, source = false, border = 'rounded', suffix = ""},
+    severity_sort = true,
+    update_in_insert = false,
+})
+
+local diagnostic_window = nil 
+
+local create_diagnostic_window = function()
+    _, diagnostic_window = vim.diagnostic.open_float(nil)
+end
+
+vim.api.nvim_create_autocmd({"CursorHold"}, {
+    callback = function() create_diagnostic_window() end,
 })
