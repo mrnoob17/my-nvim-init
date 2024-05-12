@@ -4,6 +4,7 @@ vim.call('plug#begin', '~/appdata/local/nvim-data/plugged')
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'noahfrederick/vim-hemisu'
+Plug 'rluba/jai.vim'
 
 vim.call('plug#end')
 
@@ -14,7 +15,7 @@ vim.opt.wrap = true
 vim.opt.swapfile = false
 vim.opt.guicursor = ""
 
-vim.opt.guifont='Office Code Pro D:h12'
+vim.opt.guifont='Courier Prime Code:h12'
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -54,6 +55,16 @@ vim.cmd('set guioptions=')
 vim.cmd('set background=dark')
 vim.cmd('color hemisu')
 
+--vim.cmd("hi! link @lsp.mod.declaration Label")
+--vim.cmd("hi! link @lsp.type.property Normal")
+--vim.cmd("hi! link Identifier Normal")
+--vim.cmd("hi! link Function Normal")
+--vim.cmd("hi! link Structure Type")
+--vim.cmd("hi! link @lsp.typemod.enumMember.declaration",  { "fg": s:accent6})
+--vim.cmd("hi! link @lsp.mod.class",                    { "fg": s:accent5})
+--vim.cmd("hi! link @lsp.typemod.variable.globalScope", { "fg": s:accent6})
+--vim.cmd("hi! link @lsp.type.namespace",               { "fg": s:accent5})
+
 vim.cmd('set backupdir=~/appdata/local/nvim-data/backup')
 vim.cmd('set directory=~/appdata/local/nvim-data/backup')
 vim.cmd('set undodir=~/appdata/local/nvim-data/backup')
@@ -89,14 +100,18 @@ vim.api.nvim_create_autocmd({"VimEnter"}, {
     callback = function() project_load_session() end,
 })
 
-local check_morphus_file_type = function()
+local check_custom_file_types = function()
     if vim.bo.filetype == ".mphs" then
         vim.cmd("set filetype=mphs")      
+    elseif vim.bo.filetype == ".crk" then
+        vim.cmd("set filetype=cpp")      
+    elseif vim.bo.filetype == ".rly" then
+        vim.cmd("set filetype=rly")      
     end
 end
 
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-    callback = function() check_morphus_file_type() end,
+    callback = function() check_custom_file_types() end,
 })
 
 local buf_enter_commands = function()
@@ -118,6 +133,7 @@ vim.keymap.set('n', 'BD', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
 local on_attach = function(client, bufnr)
+
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
@@ -127,6 +143,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'RE', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', 'CR', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', 'F', vim.lsp.buf.code_action, bufopts)
+
 end
 
 require'lspconfig'.clangd.setup{
