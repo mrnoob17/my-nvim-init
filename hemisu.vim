@@ -21,10 +21,10 @@ let g:colors_name = "hemisu"
 " Define reusable colors
 let s:black            = { "gui": "#000000", "cterm": "16"  }
 let s:white            = { "gui": "#FFFFFF", "cterm": "231" }
-let s:almostWhite      = { "gui": "#FFDABD", "cterm": "255" }
-let s:almostBlack      = { "gui": "#111111", "cterm": "233" }
+let s:almostWhite      = { "gui": "#f5deb3", "cterm": "255" }
+let s:almostBlack      = { "gui": "#000000", "cterm": "233" }
 let s:middleDarkGrey   = { "gui": "#777777", "cterm": "241" }
-let s:middleLightGrey  = { "gui": "#999999", "cterm": "246" }
+let s:middleLightGrey  = { "gui": "#00cd66", "cterm": "246" }
 let s:lightGrey        = { "gui": "#BBBBBB", "cterm": "249" }
 let s:darkGrey         = { "gui": "#444444", "cterm": "238" }
 
@@ -38,19 +38,19 @@ let s:middleDarkBlue   = { "gui": "#538192", "cterm": "24"  }
 let s:middleLightBlue  = { "gui": "#9FD3E6", "cterm": "116" }
 let s:lightBlue        = { "gui": "#CBE4EE", "cterm": "195" }
 let s:verylightBlue    = { "gui": "#D7F9FC", "cterm": "195" }
-let s:lightCyan        = { "gui": "#ADFFE3", "cterm": "195" }
+let s:lightCyan        = { "gui": "#7fffd4", "cterm": "195" }
 let s:lightPurple      = { "gui": "#8CFAF1", "cterm": "195" }
 
 let s:darkGreen        = { "gui": "#5F5F00", "cterm": "58"  }
 let s:middleDarkGreen  = { "gui": "#739200", "cterm": "64"  }
-let s:middleLightGreen = { "gui": "#D9A47E", "cterm": "149" }
+let s:middleLightGreen = { "gui": "#fcae74", "cterm": "149" }
 let s:lightGreen       = { "gui": "#EAEB88", "cterm": "157" }
-let s:grassGreen       = { "gui": "#D5FF80", "cterm": "157" }
+let s:grassGreen       = { "gui": "#9acd32", "cterm": "157" }
 let s:ghostGreen       = { "gui": "#98FB98", "cterm": "195" }
 
 let s:bloodRed         = {"gui" : "#FC3F3F", "cterm" : "none"}
 
-let s:darkGold         = { "gui": "#E1CE70", "cterm": "149" }
+let s:darkGold         = { "gui": "#bdb76b", "cterm": "149" }
 
 let s:darkTan          = { "gui": "#503D15", "cterm": "52"  }
 let s:lightTan         = { "gui": "#ECE1C8", "cterm": "230" }
@@ -184,7 +184,10 @@ call s:h("Identifier",                        { "fg": s:norm})
 call s:h("@type.qualifier",                   { "fg": s:accent5})
 call s:h("@lsp.mod.declaration",              { "fg": s:accent7})
 call s:h("@lsp.typemod.enumMember.declaration",  { "fg": s:accent6})
+call s:h("@lsp.typemod.method.declaration",   { "fg": s:accent8})
+call s:h("@lsp.typemod.function.declaration",   { "fg": s:accent8})
 call s:h("@lsp.mod.class",                    { "fg": s:accent5})
+call s:h("@lsp.mod.deduced",                    { "fg": s:accent5})
 call s:h("@lsp.typemod.variable.globalScope", { "fg": s:accent6})
 call s:h("@lsp.type.namespace",               { "fg": s:accent5})
 call s:h("Keyword",                           { "fg": s:accent5 })
@@ -195,7 +198,7 @@ hi NormalFloat guibg=#000000
 hi FloatBorder guibg=#000000 
 
 hi! link StorageClass Keyword
-hi! link Number       Normal
+hi! link Number       Constant
 hi! link Operator     Normal
 hi! link Delimiter    Normal
 hi! link Special      Constant
